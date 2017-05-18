@@ -19,7 +19,8 @@ SRC	= src/main.c \
 	src/get_client_command.c \
 	src/server_main.c \
 	src/server_pi.c \
-	src/login.c
+	src/login.c \
+	src/directory_handler.c
 
 SRCDIR	= src
 

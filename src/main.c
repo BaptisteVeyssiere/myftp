@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 21:02:12 2017 Baptiste Veyssiere
-** Last update Thu May 18 13:13:01 2017 Baptiste Veyssiere
+** Last update Thu May 18 14:23:59 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -86,6 +86,8 @@ int	main(int argc, char **argv)
       write(1, "The directory does not exist\n", 29);
       return (0);
     }
+  else if (chdir(argv[2]) == -1)
+    return (1);
   if (init_server(port, argv[2]) == 1)
     return (1);
   return (0);

@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 22:10:30 2017 Baptiste Veyssiere
-** Last update Thu May 18 13:21:29 2017 Baptiste Veyssiere
+** Last update Thu May 18 14:39:20 2017 Baptiste Veyssiere
 */
 
 #ifndef SERVER_H_
@@ -65,5 +65,13 @@ char	*get_client_command(int fd);
 int	user(t_data *data);
 int	pass(t_data *data);
 int	quit(t_data *data);
+
+/*
+** directory_handler.c
+*/
+
+int	cwd(t_data *data);
+int	pwd(t_data *data);
+int	cdup(t_data *data);
 
 #endif /* !SERVER_H_ */

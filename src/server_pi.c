@@ -5,57 +5,15 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 00:24:41 2017 Baptiste Veyssiere
-** Last update Thu May 18 13:40:10 2017 Baptiste Veyssiere
+** Last update Thu May 18 14:37:58 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
-
-int	cwd(t_data *data)
-{
-  (void)data;
-  printf("cwd\n");
-  return (0);
-}
-
-int	cdup(t_data *data)
-{
-  (void)data;
-  printf("cdup\n");
-  return (0);
-}
 
 int	dele(t_data *data)
 {
   (void)data;
   printf("dele\n");
-  return (0);
-}
-
-int	pwd(t_data *data)
-{
-  char	buffer[200];
-  char	*current;
-
-  if (memset(buffer, 0, 200) == NULL)
-    return (1);
-  if (getcwd(buffer, 200) == NULL)
-    return (1);
-  if (!(current = malloc(strlen(buffer) + 34)))
-    return (1);
-  if (memset(current, 0, strlen(buffer) + 34) == NULL)
-    {
-      free(current);
-      return (1);
-    }
-  strcat(current, "257 \"");
-  strcat(current, buffer);
-  strcat(current, "\" is the current directory\r\n");
-  if (reply(data->control_channel, current) == 1)
-    {
-      free(current);
-      return (1);
-    }
-  free(current);
   return (0);
 }
 
