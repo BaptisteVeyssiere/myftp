@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Thu May 18 14:37:14 2017 Baptiste Veyssiere
-** Last update Thu May 18 15:08:46 2017 Baptiste Veyssiere
+** Last update Fri May 19 00:25:05 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -32,7 +32,6 @@ int     cwd(t_data *data)
   char  *directory;
 
   directory = get_directory(data->command);
-  write(1, directory, strlen(directory));
   if (!directory || chdir(directory) == -1)
     {
       if (ENOENT == errno)

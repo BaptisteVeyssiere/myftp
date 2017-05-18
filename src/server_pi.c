@@ -5,17 +5,10 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 00:24:41 2017 Baptiste Veyssiere
-** Last update Thu May 18 17:04:56 2017 Baptiste Veyssiere
+** Last update Fri May 19 00:36:15 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
-
-int	dele(t_data *data)
-{
-  (void)data;
-  printf("dele\n");
-  return (0);
-}
 
 int	pasv(t_data *data)
 {
