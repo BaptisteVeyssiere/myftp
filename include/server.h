@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 22:10:30 2017 Baptiste Veyssiere
-** Last update Thu May 18 15:19:40 2017 Baptiste Veyssiere
+** Last update Thu May 18 16:27:26 2017 Baptiste Veyssiere
 */
 
 #ifndef SERVER_H_
@@ -35,6 +35,7 @@ typedef struct	s_data
   int		password;
   int		control_channel;
   int		quit;
+  int		mode;
   char		*path;
 }		t_data;
 

@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 00:24:41 2017 Baptiste Veyssiere
-** Last update Thu May 18 15:18:24 2017 Baptiste Veyssiere
+** Last update Thu May 18 17:04:56 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -68,10 +68,10 @@ static int	check_command(char *pattern, char *command)
 static int	process_command(t_data *data)
 {
   int		i;
-  char		*buffer[14] =
+  static char		*buffer[14] =
     {"USER", "PASS", "CWD ", "CDUP\r\n", "QUIT\r\n", "DELE ", "PWD\r\n",
      "PASV\r\n", "PORT ", "HELP", "NOOP\r\n", "RETR ", "STOR ", "LIST"};
-  int		(*fptr[14])(t_data*) =
+  static int		(*fptr[14])(t_data*) =
     {user, pass, cwd, cdup, quit, dele, pwd, pasv, port,
      help, noop, retr, stor, list};
 
@@ -126,6 +126,7 @@ int	server_pi(int control_channel, const char *path)
   data->password = 0;
   data->quit = 0;
   data->path = (char*)path;
+  data->mode = 0;
   while (1)
     {
       if (!(next = get_client_command(control_channel)))
