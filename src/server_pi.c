@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 00:24:41 2017 Baptiste Veyssiere
-** Last update Thu May 18 14:37:58 2017 Baptiste Veyssiere
+** Last update Thu May 18 15:18:24 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -28,20 +28,6 @@ int	port(t_data *data)
 {
   (void)data;
   printf("port\n");
-  return (0);
-}
-
-int	help(t_data *data)
-{
-  (void)data;
-  printf("help\n");
-  return (0);
-}
-
-int	noop(t_data *data)
-{
-  (void)data;
-  printf("noop\n");
   return (0);
 }
 
