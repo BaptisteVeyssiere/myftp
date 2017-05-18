@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 22:10:30 2017 Baptiste Veyssiere
-** Last update Thu May 18 10:16:05 2017 Baptiste Veyssiere
+** Last update Thu May 18 13:21:29 2017 Baptiste Veyssiere
 */
 
 #ifndef SERVER_H_
@@ -20,6 +20,9 @@
 # include <arpa/inet.h>
 # include <netinet/in.h>
 # include <ctype.h>
+# include <sys/types.h>
+# include <dirent.h>
+# include <errno.h>
 
 # define READ_SIZE 256
 # define USAGE "Usage : ./server port path\n"
@@ -32,20 +35,21 @@ typedef struct	s_data
   int		password;
   int		control_channel;
   int		quit;
+  char		*path;
 }		t_data;
 
 /*
 ** server_pi.c
 */
 
-int	server_pi(int control_channel);
+int	server_pi(int control_channel, const char *path);
 int	reply(int control_channel, const char *code);
 
 /*
 ** server_main.c
 */
 
-int	server_main(int fd);
+int	server_main(int fd, const char *path);
 
 /*
 ** get_client_command.c

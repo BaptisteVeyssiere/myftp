@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 21:02:12 2017 Baptiste Veyssiere
-** Last update Thu May 18 12:52:13 2017 Baptiste Veyssiere
+** Last update Thu May 18 13:13:01 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -25,7 +25,7 @@ static int	stoi(char *str)
   return (nbr);
 }
 
-static int		init_server(int port)
+static int		init_server(int port, const char *path)
 {
   struct protoent	*pe;
   struct sockaddr_in	s_in;
@@ -39,7 +39,7 @@ static int		init_server(int port)
   s_in.sin_addr.s_addr = INADDR_ANY;
   if (bind(fd, (const struct sockaddr *)&s_in, sizeof(s_in)) == -1 ||
       listen(fd, QUEUE_SIZE) == -1 ||
-      server_main(fd) == 1)
+      server_main(fd, path) == 1)
     {
       if (close(fd) == -1)
 	return (1);
@@ -50,18 +50,43 @@ static int		init_server(int port)
   return (0);
 }
 
+static int	check_path(const char *path)
+{
+  DIR	*dir;
+
+  dir = opendir(path);
+  if (dir)
+    {
+      if (closedir(dir) == -1)
+	return (-1);
+      return (1);
+    }
+  else if (ENOENT == errno)
+    return (0);
+  else
+    return (-1);
+  return (0);
+}
+
 int	main(int argc, char **argv)
 {
   int	port;
+  int	ret;
 
   if (argc != 3)
     {
       write(1, USAGE, strlen(USAGE));
       return (0);
     }
-  if ((port = stoi(argv[1])) == -1)
+  if ((port = stoi(argv[1])) == -1 ||
+      (ret = check_path(argv[2])) == -1)
     return (1);
-  if (init_server(port, path) == 1)
+  if (ret == 0)
+    {
+      write(1, "The directory does not exist\n", 29);
+      return (0);
+    }
+  if (init_server(port, argv[2]) == 1)
     return (1);
   return (0);
 }
