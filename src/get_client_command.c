@@ -5,17 +5,12 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 00:23:14 2017 Baptiste Veyssiere
-** Last update Wed May 17 00:23:15 2017 Baptiste Veyssiere
+** Last update Wed May 17 22:18:26 2017 Baptiste Veyssiere
 */
 
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdlib.h>
+#include "server.h"
 
-#define READ_SIZE 256
-
-char	*concatenate_string(const char *s1, const char *s2)
+char	*concatenate_string(char *s1, char *s2)
 {
   char	*result;
   int	length;
@@ -33,6 +28,8 @@ char	*concatenate_string(const char *s1, const char *s2)
   j = -1;
   while (++i < length)
     result[i] = s2[++j];
+  free(s1);
+  free(s2);
   return (result);
 }
 
@@ -64,7 +61,7 @@ char	*get_client_command(int fd)
   static char	buffer[READ_SIZE] = {0};
   int		i;
 
-  if (buffer[0] == 0 && read(fd, buffer, READ_SIZE) < 1)
+  if (buffer[0] == 0 && read(fd, buffer, READ_SIZE) < 0)
     return (NULL);
   i = -1;
   while (++i < READ_SIZE && buffer[i] &&
