@@ -1,11 +1,11 @@
 /*
-** server_pi.c for Project-Master in /home/veyssi_b/rendu/tek2/PSU/PSU_2016_myftp
+** server_pi.c for  in /home/veyssi_b/rendu/tek2/PSU/PSU_2016_myftp
 **
 ** Made by Baptiste Veyssiere
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 00:24:41 2017 Baptiste Veyssiere
-** Last update Sun May 21 22:25:52 2017 Baptiste Veyssiere
+** Last update Sun May 21 22:52:22 2017 Baptiste Veyssiere
 */
 
 #include "server.h"

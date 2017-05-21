@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Sat May 20 01:17:47 2017 Baptiste Veyssiere
-** Last update Sun May 21 22:15:25 2017 Baptiste Veyssiere
+** Last update Sun May 21 22:51:09 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -87,7 +87,6 @@ int	pasv(t_data *data)
   int			fd;
   int			port;
   socklen_t		len;
-
 
   if (pasv_init(data, &fd, &s_in))
     return (1);

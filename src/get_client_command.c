@@ -1,11 +1,11 @@
 /*
-** get_client_command.c for Project-Master in /home/veyssi_b/rendu/tek2/PSU/PSU_2016_myftp
+** get_client_command.c for in /home/veyssi_b/rendu/tek2/PSU/PSU_2016_myftp
 **
 ** Made by Baptiste Veyssiere
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 00:23:14 2017 Baptiste Veyssiere
-** Last update Wed May 17 22:18:26 2017 Baptiste Veyssiere
+** Last update Sun May 21 22:49:02 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
