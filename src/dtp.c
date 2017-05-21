@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Sun May 21 02:48:15 2017 Baptiste Veyssiere
-** Last update Sun May 21 15:37:25 2017 Baptiste Veyssiere
+** Last update Sun May 21 17:38:36 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -87,29 +87,4 @@ int		dtp_init(t_data *data)
 	}
     }
   return (data_channel);
-}
-
-int     stor(t_data *data)
-{
-  int	data_channel;
-  int	ret;
-
-  if (data->mode == 0)
-    return (reply(data->control_channel, "425 Use PORT or PASV first.\r\n"));
-  if ((data_channel = dtp_init(data)) == 1)
-    {
-      if (data->mode == 2)
-	close(data->data_channel);
-      data->mode = 0;
-      return (1);
-    }
-  ret = reply(data_channel, "STOR\r\n");
-  if (close(data_channel) == -1 ||
-      (data->mode == 2 && close(data->data_channel)))
-    {
-      data->mode = 0;
-      return (1);
-    }
-  data->mode = 0;
-  return (ret);
 }

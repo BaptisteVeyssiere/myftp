@@ -1,5 +1,5 @@
 ##
-## Makefile for 42sh in /home/VEYSSI_B/rendu/Programmation_Shell/test/test_42tree
+## Makefile for 42sh in /home/VEYSSI_B/rendu/tek2/PSU/PSU_2016_myftp/
 ##
 ## Made by Baptiste veyssiere
 ## Login   <VEYSSI_B@epitech.net>
@@ -27,7 +27,8 @@ SRC	= src/main.c \
 	src/basic_functions.c \
 	src/dtp.c \
 	src/list.c \
-	src/retr.c
+	src/retr.c \
+	src/stor.c
 
 SRCDIR	= src
 

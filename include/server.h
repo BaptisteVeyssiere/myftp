@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 22:10:30 2017 Baptiste Veyssiere
-** Last update Sun May 21 17:04:26 2017 Baptiste Veyssiere
+** Last update Sun May 21 17:39:04 2017 Baptiste Veyssiere
 */
 
 #ifndef SERVER_H_
@@ -128,5 +128,11 @@ int	list(t_data *data);
 */
 
 int	retr(t_data *data);
+
+/*
+** stor.c
+*/
+
+int	stor(t_data *data);
 
 #endif /* !SERVER_H_ */
