@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 22:10:30 2017 Baptiste Veyssiere
-** Last update Fri May 19 00:36:47 2017 Baptiste Veyssiere
+** Last update Sun May 21 01:26:30 2017 Baptiste Veyssiere
 */
 
 #ifndef SERVER_H_
@@ -23,6 +23,7 @@
 # include <sys/types.h>
 # include <dirent.h>
 # include <errno.h>
+# include <limits.h>
 
 # define READ_SIZE 256
 # define USAGE "Usage : ./server port path\n"
@@ -37,20 +38,24 @@ typedef struct	s_data
   int		quit;
   int		mode;
   char		*path;
+  char		*client_ip;
+  int		client_port;
+  char		*ip;
+  int		data_channel;
 }		t_data;
 
 /*
 ** server_pi.c
 */
 
-int	server_pi(int control_channel, const char *path);
+int	server_pi(int control_channel, const char *ip);
 int	reply(int control_channel, const char *code);
 
 /*
 ** server_main.c
 */
 
-int	server_main(int fd, const char *path);
+int	server_main(int fd);
 
 /*
 ** get_client_command.c
@@ -82,5 +87,24 @@ int	cdup(t_data *data);
 int	noop(t_data *data);
 int	help(t_data *data);
 int	dele(t_data *data);
+
+/*
+** basic_functions.c
+*/
+
+int	my_getnbr(const char *str);
+char	*epur_str(const char *str);
+
+/*
+** port.c
+*/
+
+int	port(t_data *data);
+
+/*
+** pasv.c
+*/
+
+int	pasv(t_data *data);
 
 #endif /* !SERVER_H_ */

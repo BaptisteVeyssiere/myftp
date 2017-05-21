@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 21:18:15 2017 Baptiste Veyssiere
-** Last update Thu May 18 13:12:04 2017 Baptiste Veyssiere
+** Last update Sun May 21 01:26:42 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -23,7 +23,7 @@ static int	close_channel(int control_channel, int ret)
   exit(ret);
 }
 
-int			server_main(int fd, const char *path)
+int			server_main(int fd)
 {
   int			control_channel;
   struct sockaddr_in	s_in;
@@ -39,7 +39,7 @@ int			server_main(int fd, const char *path)
 	{
 	  if (close(fd) == -1)
 	    exit(1);
-	  if (server_pi(control_channel, path) == 1)
+	  if (server_pi(control_channel, inet_ntoa(s_in.sin_addr)) == 1)
 	    close_channel(control_channel, 1);
 	  close_channel(control_channel, 0);
 	}

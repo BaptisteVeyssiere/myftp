@@ -5,42 +5,34 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 00:24:41 2017 Baptiste Veyssiere
-** Last update Fri May 19 00:36:15 2017 Baptiste Veyssiere
+** Last update Sun May 21 01:25:08 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
 
-int	pasv(t_data *data)
-{
-  (void)data;
-  printf("pasv\n");
-  return (0);
-}
-
-int	port(t_data *data)
-{
-  (void)data;
-  printf("port\n");
-  return (0);
-}
-
 int	retr(t_data *data)
 {
-  (void)data;
+  if (data->mode == 0)
+    return (reply(data->control_channel, "425 Use PORT or PASV first.\r\n"));
+  data->mode = 0;
   printf("retr\n");
   return (0);
 }
 
 int	stor(t_data *data)
 {
-  (void)data;
+  if (data->mode == 0)
+    return (reply(data->control_channel, "425 Use PORT or PASV first.\r\n"));
+  data->mode = 0;
   printf("stor\n");
   return (0);
 }
 
 int	list(t_data *data)
 {
-  (void)data;
+  if (data->mode == 0)
+    return (reply(data->control_channel, "425 Use PORT or PASV first.\r\n"));
+  data->mode = 0;
   printf("list\n");
   return (0);
 }
@@ -62,8 +54,8 @@ static int	process_command(t_data *data)
 {
   int		i;
   static char		*buffer[14] =
-    {"USER", "PASS", "CWD ", "CDUP\r\n", "QUIT\r\n", "DELE ", "PWD\r\n",
-     "PASV\r\n", "PORT ", "HELP", "NOOP\r\n", "RETR ", "STOR ", "LIST"};
+    {"USER", "PASS", "CWD ", "CDUP", "QUIT", "DELE ", "PWD",
+     "PASV", "PORT ", "HELP", "NOOP", "RETR ", "STOR ", "LIST"};
   static int		(*fptr[14])(t_data*) =
     {user, pass, cwd, cdup, quit, dele, pwd, pasv, port,
      help, noop, retr, stor, list};
@@ -77,9 +69,9 @@ static int	process_command(t_data *data)
 	else
 	  return(fptr[i](data));
       }
-  if (reply(data->control_channel, "530 Please login with USER and PASS.\r\n") == 1)
-    return (1);
-  return (0);
+  if (!data->username || !data->password)
+    return (reply(data->control_channel, "530 Please login with USER and PASS.\r\n"));
+  return (reply(data->control_channel, "500 Unknown command.\r\n"));
 }
 
 static int	command_complete(char *command)
@@ -101,12 +93,13 @@ int reply(int control_channel, const char *code)
   return (0);
 }
 
-int	server_pi(int control_channel, const char *path)
+int	server_pi(int control_channel, const char *ip)
 {
   char		*next;
   int		bufferize;
   int		ret;
   t_data	*data;
+  char		buffer[100];
 
   bufferize = 0;
   if (reply(control_channel, "220 Service ready for new user.\r\n"))
@@ -118,8 +111,16 @@ int	server_pi(int control_channel, const char *path)
   data->username = 0;
   data->password = 0;
   data->quit = 0;
-  data->path = (char*)path;
+  if (!(data->path = getcwd(buffer, 100)))
+    {
+      free(data);
+      return (1);
+    }
   data->mode = 0;
+  data->client_port = 0;
+  data->client_ip = NULL;
+  data->ip = (char*)ip;
+  data->data_channel = -1;
   while (1)
     {
       if (!(next = get_client_command(control_channel)))
@@ -136,8 +137,13 @@ int	server_pi(int control_channel, const char *path)
       if (command_complete(data->command))
 	{
 	  bufferize = 0;
-	  ret = process_command(data);
-	  free(data->command);
+	  if ((data->command = epur_str(data->command)))
+	    {
+	      ret = process_command(data);
+	      free(data->command);
+	    }
+	  else
+	    ret = 1;
 	  if (ret || data->quit)
 	    return (ret);
 	}

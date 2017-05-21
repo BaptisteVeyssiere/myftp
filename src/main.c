@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 21:02:12 2017 Baptiste Veyssiere
-** Last update Thu May 18 14:23:59 2017 Baptiste Veyssiere
+** Last update Sun May 21 01:26:15 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -25,7 +25,7 @@ static int	stoi(char *str)
   return (nbr);
 }
 
-static int		init_server(int port, const char *path)
+static int		init_server(int port)
 {
   struct protoent	*pe;
   struct sockaddr_in	s_in;
@@ -39,7 +39,7 @@ static int		init_server(int port, const char *path)
   s_in.sin_addr.s_addr = INADDR_ANY;
   if (bind(fd, (const struct sockaddr *)&s_in, sizeof(s_in)) == -1 ||
       listen(fd, QUEUE_SIZE) == -1 ||
-      server_main(fd, path) == 1)
+      server_main(fd) == 1)
     {
       if (close(fd) == -1)
 	return (1);
@@ -88,7 +88,7 @@ int	main(int argc, char **argv)
     }
   else if (chdir(argv[2]) == -1)
     return (1);
-  if (init_server(port, argv[2]) == 1)
+  if (init_server(port) == 1)
     return (1);
   return (0);
 }

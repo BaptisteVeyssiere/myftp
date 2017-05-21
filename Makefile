@@ -21,7 +21,10 @@ SRC	= src/main.c \
 	src/server_pi.c \
 	src/login.c \
 	src/directory_handler.c \
-	src/miscellaneous.c
+	src/miscellaneous.c \
+	src/port.c \
+	src/pasv.c \
+	src/basic_functions.c
 
 SRCDIR	= src
 

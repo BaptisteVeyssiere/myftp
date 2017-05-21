@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 23:02:09 2017 Baptiste Veyssiere
-** Last update Thu May 18 10:44:02 2017 Baptiste Veyssiere
+** Last update Fri May 19 23:25:20 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -15,7 +15,7 @@ static char	*get_login(char *command)
   while (*(++command) && *command != ' ');
   if (*command == ' ')
     return (command + 1);
-  return ("\r\n");
+  return ("");
 }
 
 int     user(t_data *data)
@@ -23,7 +23,7 @@ int     user(t_data *data)
   char	*login;
 
   login = get_login(data->command);
-  if (!login || strcmp(login, "Anonymous\r\n"))
+  if (!login || strcasecmp(login, "Anonymous"))
     return (reply(data->control_channel, "430 Invalid username.\r\n"));
   else
     {
@@ -40,7 +40,7 @@ int     pass(t_data *data)
   if (data->username == 0)
     return (reply(data->control_channel, "503 Login with USER first.\r\n"));
   password = get_login(data->command);
-  if (!password || strcmp(password, "\r\n"))
+  if (!password || strcmp(password, ""))
     {
       data->username = 0;
       return (reply(data->control_channel, "430 Invalid password.\r\n"));

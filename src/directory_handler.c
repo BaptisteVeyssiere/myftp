@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Thu May 18 14:37:14 2017 Baptiste Veyssiere
-** Last update Fri May 19 00:25:05 2017 Baptiste Veyssiere
+** Last update Sun May 21 02:26:13 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -18,8 +18,7 @@ static char     *get_directory(char *command)
   if (*command == ' ')
     {
       i = 0;
-      while (command[++i] && command[i] != ' ' &&
-	     command[i] != '\r' && command[i] != '\n');
+      while (command[++i] && command[i] != ' ');
       if (command[i])
 	command[i] = 0;
       return (command + 1);
@@ -30,11 +29,20 @@ static char     *get_directory(char *command)
 int     cwd(t_data *data)
 {
   char  *directory;
+  char	str[100];
 
   directory = get_directory(data->command);
-  if (!directory || chdir(directory) == -1)
+  if (directory[0] && !realpath(directory, str))
     {
       if (ENOENT == errno)
+        return (reply(data->control_channel, "550 Failed to change directory.\r\n"));
+      else
+	return (1);
+    }
+  if (!directory[0] || (directory[0] == '/' && chdir(directory + 1) == -1) ||
+      (!strncmp(str, data->path, strlen(data->path)) && chdir(directory) == -1))
+    {
+      if (!directory[0] || ENOENT == errno)
         return (reply(data->control_channel, "550 Failed to change directory.\r\n"));
       else
         return (1);
@@ -44,7 +52,11 @@ int     cwd(t_data *data)
 
 int     cdup(t_data *data)
 {
-  if (chdir("..") == -1)
+  char	buffer[100];
+
+  if (!memset(buffer, 0, 100) || !getcwd(buffer, 100))
+    return (1);
+  if (strlen(buffer) > strlen(data->path) && chdir("..") == -1)
     {
       if (ENOENT == errno)
         return (reply(data->control_channel, "550 Failed to change directory.\r\n"));
@@ -59,19 +71,19 @@ int     pwd(t_data *data)
   char  buffer[200];
   char  *current;
 
-  if (memset(buffer, 0, 200) == NULL)
+  if (memset(buffer, 0, 200) == NULL || getcwd(buffer, 200) == NULL ||
+      !(current = malloc(strlen(buffer) - strlen(data->path) + 35)))
     return (1);
-  if (getcwd(buffer, 200) == NULL)
-    return (1);
-  if (!(current = malloc(strlen(buffer) + 34)))
-    return (1);
-  if (memset(current, 0, strlen(buffer) + 34) == NULL)
+  if (memset(current, 0, strlen(buffer) - strlen(data->path) + 35) == NULL)
     {
       free(current);
       return (1);
     }
   strcat(current, "257 \"");
-  strcat(current, buffer);
+  if (strlen(buffer) <= strlen(data->path))
+    strcat(current, "/");
+  else
+    strcat(current, buffer + strlen(data->path));
   strcat(current, "\" is the current directory\r\n");
   if (reply(data->control_channel, current) == 1)
     {
