@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 22:10:30 2017 Baptiste Veyssiere
-** Last update Sun May 21 14:34:33 2017 Baptiste Veyssiere
+** Last update Sun May 21 17:04:26 2017 Baptiste Veyssiere
 */
 
 #ifndef SERVER_H_
@@ -24,6 +24,8 @@
 # include <dirent.h>
 # include <errno.h>
 # include <limits.h>
+# include <sys/stat.h>
+# include <fcntl.h>
 
 # define READ_SIZE 256
 # define USAGE "Usage : ./server port path\n"
@@ -113,7 +115,6 @@ int	pasv(t_data *data);
 
 char	*get_full_path(char *command, t_data *data);
 int	dtp_init(t_data *data);
-int	retr(t_data *data);
 int	stor(t_data *data);
 
 /*
@@ -121,5 +122,11 @@ int	stor(t_data *data);
 */
 
 int	list(t_data *data);
+
+/*
+** retr.c
+*/
+
+int	retr(t_data *data);
 
 #endif /* !SERVER_H_ */

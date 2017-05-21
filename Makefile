@@ -26,7 +26,8 @@ SRC	= src/main.c \
 	src/pasv.c \
 	src/basic_functions.c \
 	src/dtp.c \
-	src/list.c
+	src/list.c \
+	src/retr.c
 
 SRCDIR	= src
 
