@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Sat May 20 01:17:47 2017 Baptiste Veyssiere
-** Last update Sun May 21 01:13:50 2017 Baptiste Veyssiere
+** Last update Sun May 21 15:21:37 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -40,7 +40,9 @@ static int	passive_reply(char *ip, int port, t_data *data)
   char  *str;
   int   i;
   int   length;
+  char	buf[16];
 
+  printf("%s:%d\n", ip, port);
   if (!(port1 = to_string(port / 256)))
     return (1);
   if (!(port2 = to_string(port % 256)))
@@ -48,11 +50,18 @@ static int	passive_reply(char *ip, int port, t_data *data)
       free(port1);
       return (1);
     }
+  if (!memset(buf, 0, 16))
+    {
+      free(port1);
+      free(port2);
+      return (1);
+    }
+  strcat(buf, ip);
   i = -1;
-  while (ip[++i])
-    if (ip[i] == '.')
-      ip[i] = ',';
-  length = strlen(ip) + strlen(port1) + strlen(port2) + 34;
+  while (buf[++i])
+    if (buf[i] == '.')
+      buf[i] = ',';
+  length = strlen(buf) + strlen(port1) + strlen(port2) + 34;
   if (!(str = malloc(length)) || !memset(str, 0, length))
     {
       free(port1);
@@ -60,7 +69,7 @@ static int	passive_reply(char *ip, int port, t_data *data)
       return (1);
     }
   strcat(str, "227 Entering Passive Mode (");
-  strcat(str, ip);
+  strcat(str, buf);
   strcat(str, ",");
   strcat(str, port1);
   strcat(str, ",");
@@ -82,9 +91,9 @@ int	pasv(t_data *data)
   int			port;
   socklen_t		len;
 
-  data->mode = 0;
-  if (data->data_channel != -1 && close(data->data_channel) == -1)
+  if (data->mode == 2 && close(data->data_channel) == -1)
     return (1);
+  data->mode = 0;
   data->data_channel = -1;
   if (!(pe = getprotobyname("TCP")) ||
       (fd = socket(AF_INET, SOCK_STREAM, pe->p_proto)) == -1)
@@ -92,9 +101,11 @@ int	pasv(t_data *data)
   s_in.sin_family = AF_INET;
   s_in.sin_port = htons(0);
   s_in.sin_addr.s_addr = inet_addr(data->ip);
+  len = sizeof(sin);
   if (bind(fd, (const struct sockaddr *)&s_in, sizeof(s_in)) == -1 ||
       getsockname(fd, (struct sockaddr *)&sin, &len) == -1 ||
       (port = ntohs(sin.sin_port)) == -1 ||
+      listen(fd, QUEUE_SIZE) == -1 ||
       passive_reply(data->ip, port, data))
     {
       if (close(fd) == -1)

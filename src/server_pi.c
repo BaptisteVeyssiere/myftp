@@ -5,37 +5,10 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 00:24:41 2017 Baptiste Veyssiere
-** Last update Sun May 21 01:25:08 2017 Baptiste Veyssiere
+** Last update Sun May 21 03:01:29 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
-
-int	retr(t_data *data)
-{
-  if (data->mode == 0)
-    return (reply(data->control_channel, "425 Use PORT or PASV first.\r\n"));
-  data->mode = 0;
-  printf("retr\n");
-  return (0);
-}
-
-int	stor(t_data *data)
-{
-  if (data->mode == 0)
-    return (reply(data->control_channel, "425 Use PORT or PASV first.\r\n"));
-  data->mode = 0;
-  printf("stor\n");
-  return (0);
-}
-
-int	list(t_data *data)
-{
-  if (data->mode == 0)
-    return (reply(data->control_channel, "425 Use PORT or PASV first.\r\n"));
-  data->mode = 0;
-  printf("list\n");
-  return (0);
-}
 
 static int	check_command(char *pattern, char *command)
 {

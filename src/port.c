@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Fri May 19 19:13:04 2017 Baptiste Veyssiere
-** Last update Sun May 21 00:38:15 2017 Baptiste Veyssiere
+** Last update Sun May 21 11:33:04 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -95,9 +95,9 @@ int     port(t_data *data)
   char  *ip;
   int   port;
 
-  data->mode = 0;
-  if (data->data_channel != -1 && close(data->data_channel) == -1)
+  if (data->mode == 2 && close(data->data_channel) == -1)
     return (1);
+  data->mode = 0;
   data->data_channel = -1;
   if (check_active_param(data->command + 5))
     return (reply(data->control_channel, "500 Illegal PORT command.\r\n"));

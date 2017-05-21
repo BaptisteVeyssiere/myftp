@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 22:10:30 2017 Baptiste Veyssiere
-** Last update Sun May 21 01:26:30 2017 Baptiste Veyssiere
+** Last update Sun May 21 14:34:33 2017 Baptiste Veyssiere
 */
 
 #ifndef SERVER_H_
@@ -106,5 +106,20 @@ int	port(t_data *data);
 */
 
 int	pasv(t_data *data);
+
+/*
+** dtp.c
+*/
+
+char	*get_full_path(char *command, t_data *data);
+int	dtp_init(t_data *data);
+int	retr(t_data *data);
+int	stor(t_data *data);
+
+/*
+** list.c
+*/
+
+int	list(t_data *data);
 
 #endif /* !SERVER_H_ */

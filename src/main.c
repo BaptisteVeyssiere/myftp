@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 21:02:12 2017 Baptiste Veyssiere
-** Last update Sun May 21 01:26:15 2017 Baptiste Veyssiere
+** Last update Sun May 21 11:47:42 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -31,6 +31,11 @@ static int		init_server(int port)
   struct sockaddr_in	s_in;
   int			fd;
 
+  if (port < 1024)
+    {
+      write(1, "The port number must be between 1024 and 65535\n", 47);
+      return (1);
+    }
   if (!(pe = getprotobyname("TCP")) ||
       (fd = socket(AF_INET, SOCK_STREAM, pe->p_proto)) == -1)
     return (1);
