@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Fri May 19 19:13:04 2017 Baptiste Veyssiere
-** Last update Sun May 21 11:33:04 2017 Baptiste Veyssiere
+** Last update Sun May 21 18:18:33 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -90,7 +90,7 @@ static int	check_ip_port(const char *ip, int port)
   return (0);
 }
 
-int     port(t_data *data)
+int	port(t_data *data)
 {
   char  *ip;
   int   port;
@@ -111,5 +111,5 @@ int     port(t_data *data)
   if (data->client_ip)
     free(data->client_ip);
   data->client_ip = ip;
-  return (reply(data->control_channel, "200 PORT command successful. Consider using PASV.\r\n"));
+  return (reply(data->control_channel, PORT_OK));
 }

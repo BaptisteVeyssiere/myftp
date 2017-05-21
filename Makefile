@@ -11,7 +11,7 @@ NAME	= server
 
 RM	= rm -f
 
-CC	= gcc
+CC	= gcc -g
 
 MKDIR	= mkdir -p
 
@@ -28,7 +28,9 @@ SRC	= src/main.c \
 	src/dtp.c \
 	src/list.c \
 	src/retr.c \
-	src/stor.c
+	src/stor.c \
+	src/signal_handler.c \
+	src/tools.c
 
 SRCDIR	= src
 

@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 22:10:30 2017 Baptiste Veyssiere
-** Last update Sun May 21 17:39:04 2017 Baptiste Veyssiere
+** Last update Sun May 21 21:52:12 2017 Baptiste Veyssiere
 */
 
 #ifndef SERVER_H_
@@ -26,10 +26,29 @@
 # include <limits.h>
 # include <sys/stat.h>
 # include <fcntl.h>
+# include <signal.h>
 
 # define READ_SIZE 256
 # define USAGE "Usage : ./server port path\n"
 # define QUEUE_SIZE 100
+
+# define CWD_FAIL "550 Failed to change directory.\r\n"
+# define CWD_SUCCESS "250 Directory successfully changed.\r\n"
+# define CONNEXION_FAILED "425 Failed to establish connection.\r\n"
+# define TFR_FAIL "226 Transfer done (but failed to open directory).\r\n"
+# define PRELIST "150 Here comes the directory listing.\r\n"
+# define USER_OK "331 User name okay, need password.\r\n"
+# define LOGGED "230 User logged in, proceed.\r\n"
+# define QUIT "221 Service closing control connection.\r\n"
+# define FILE_OFF "550 The file is not available.\r\n"
+# define FILE_ON "250 Requested file action okay, completed.\r\n"
+# define HELP "USER PASS CWD CDUP QUIT DELE PWD PASV PORT \
+HELP NOOP RETR STOR LIST\r\n"
+# define PORT_OK "200 PORT command successful. Consider using PASV.\r\n"
+# define FILE_OK "150 File status okay; about to open data connection.\r\n"
+# define AUTH "530 Please login with USER and PASS.\r\n"
+
+int	stop;
 
 typedef struct	s_data
 {
@@ -51,7 +70,6 @@ typedef struct	s_data
 */
 
 int	server_pi(int control_channel, const char *ip);
-int	reply(int control_channel, const char *code);
 
 /*
 ** server_main.c
@@ -96,6 +114,8 @@ int	dele(t_data *data);
 
 int	my_getnbr(const char *str);
 char	*epur_str(const char *str);
+int	reply(int control_channel, const char *code);
+int	init_data(t_data *data, int control_channel, const char *ip);
 
 /*
 ** port.c
@@ -134,5 +154,18 @@ int	retr(t_data *data);
 */
 
 int	stor(t_data *data);
+
+/*
+** signal_handler.c
+*/
+
+void	sigint_handler(int sig);
+
+/*
+** tools.c
+*/
+
+int	pasv_init(t_data *data, int *fd, struct sockaddr_in *s_in);
+int	free_and_ret(t_data *data);
 
 #endif /* !SERVER_H_ */

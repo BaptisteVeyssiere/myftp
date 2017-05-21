@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 00:24:41 2017 Baptiste Veyssiere
-** Last update Sun May 21 03:01:29 2017 Baptiste Veyssiere
+** Last update Sun May 21 22:25:52 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -40,10 +40,10 @@ static int	process_command(t_data *data)
 	if (i > 1 && i != 4 && (!data->username || !data->password))
 	  i = 14;
 	else
-	  return(fptr[i](data));
+	  return (fptr[i](data));
       }
   if (!data->username || !data->password)
-    return (reply(data->control_channel, "530 Please login with USER and PASS.\r\n"));
+    return (reply(data->control_channel, AUTH));
   return (reply(data->control_channel, "500 Unknown command.\r\n"));
 }
 
@@ -59,69 +59,53 @@ static int	command_complete(char *command)
   return (0);
 }
 
-int reply(int control_channel, const char *code)
+static int	pi_check(t_data *data, int *bufferize)
 {
-  if (write(control_channel, code, strlen(code)) < (int)strlen(code))
-    return (1);
-  return (0);
+  int		ret;
+
+  if (command_complete(data->command))
+    {
+      *bufferize = 0;
+      if ((data->command = epur_str(data->command)))
+	{
+	  ret = process_command(data);
+	  free(data->command);
+	}
+      else
+	ret = 1;
+      if (ret || data->quit)
+	return (ret);
+    }
+  else
+    *bufferize = 1;
+  return (2);
 }
 
 int	server_pi(int control_channel, const char *ip)
 {
   char		*next;
-  int		bufferize;
-  int		ret;
+  int		buffer;
   t_data	*data;
-  char		buffer[100];
 
-  bufferize = 0;
-  if (reply(control_channel, "220 Service ready for new user.\r\n"))
+  buffer = 0;
+  if (reply(control_channel, "220 Service ready for new user.\r\n") ||
+      !(data = malloc(sizeof(t_data))) ||
+      init_data(data, control_channel, ip))
     return (1);
-  if (!(data = malloc(sizeof(t_data))))
-    return (1);
-  data->control_channel = control_channel;
-  data->command = NULL;
-  data->username = 0;
-  data->password = 0;
-  data->quit = 0;
-  if (!(data->path = getcwd(buffer, 100)))
-    {
-      free(data);
-      return (1);
-    }
-  data->mode = 0;
-  data->client_port = 0;
-  data->client_ip = NULL;
-  data->ip = (char*)ip;
-  data->data_channel = -1;
-  while (1)
+  while (!stop)
     {
       if (!(next = get_client_command(control_channel)))
-	return (1);
-      if (bufferize &&
-	  !(data->command = concatenate_string(data->command, next)))
+	return (free_and_ret(data));
+      if (buffer && !(data->command = concatenate_string(data->command, next)))
 	{
 	  free(data->command);
 	  free(next);
-	  return (1);
+	  return (free_and_ret(data));
 	}
-      else if (!bufferize)
+      else if (!buffer)
 	data->command = next;
-      if (command_complete(data->command))
-	{
-	  bufferize = 0;
-	  if ((data->command = epur_str(data->command)))
-	    {
-	      ret = process_command(data);
-	      free(data->command);
-	    }
-	  else
-	    ret = 1;
-	  if (ret || data->quit)
-	    return (ret);
-	}
-      else
-	bufferize = 1;
+      if (pi_check(data, &buffer) < 2)
+	return (free_and_ret(data));
     }
   return (0);
 }

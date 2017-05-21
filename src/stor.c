@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Sun May 21 17:25:52 2017 Baptiste Veyssiere
-** Last update Sun May 21 17:44:05 2017 Baptiste Veyssiere
+** Last update Sun May 21 22:38:27 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -24,7 +24,7 @@ static int	stor_file(t_data *data, int data_channel)
   free(command);
   if (fd == -1)
     return (reply(data->control_channel, "550 Failed to open file.\r\n"));
-  if (reply(data->control_channel, "150 File status okay; about to open data connection.\r\n"))
+  if (reply(data->control_channel, FILE_OK))
     return (1);
   while ((ret = read(data_channel, buffer, 100)) > 0)
     if (ret == -1 ||
@@ -38,7 +38,7 @@ static int	stor_file(t_data *data, int data_channel)
   return (0);
 }
 
-int     stor(t_data *data)
+int	stor(t_data *data)
 {
   int   data_channel;
 
@@ -49,7 +49,7 @@ int     stor(t_data *data)
       if (data->mode == 2)
         close(data->data_channel);
       data->mode = 0;
-      return (1);
+      return (0);
     }
   if (stor_file(data, data_channel) || close(data_channel) == -1 ||
       (data->mode == 2 && close(data->data_channel)))

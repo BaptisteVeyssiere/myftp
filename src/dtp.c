@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Sun May 21 02:48:15 2017 Baptiste Veyssiere
-** Last update Sun May 21 17:38:36 2017 Baptiste Veyssiere
+** Last update Sun May 21 22:35:04 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -24,6 +24,18 @@ static char	*get_filepath(char *command)
       return (command + 1);
     }
   return ("");
+}
+
+static char	*alloc_relative_path(t_data *data, const char *file)
+{
+  char		*ret;
+
+  if (!(ret = malloc(strlen(data->path) + strlen(file))) ||
+      !memset(ret, 0, strlen(data->path) + strlen(file)))
+    return (NULL);
+  strcat(ret, data->path);
+  strcat(ret, file);
+  return (ret);
 }
 
 char	*get_full_path(char *command, t_data *data)
@@ -50,14 +62,8 @@ char	*get_full_path(char *command, t_data *data)
       strcat(ret, "/");
       strcat(ret, file);
     }
-  else
-    {
-      if (!(ret = malloc(strlen(data->path) + strlen(file))) ||
-	  !memset(ret, 0, strlen(data->path) + strlen(file)))
-	return (NULL);
-      strcat(ret, data->path);
-      strcat(ret, file);
-    }
+  else if (!(ret = alloc_relative_path(data, file)))
+    return (NULL);
   return (ret);
 }
 
@@ -83,7 +89,8 @@ int		dtp_init(t_data *data)
       if (connect(data_channel, (struct sockaddr *)&s_in, sizeof(s_in)) == -1)
 	{
 	  close(data_channel);
-	  return (reply(data->control_channel, "425 Failed to establish connection.\r\n"));
+	  reply(data->control_channel, CONNEXION_FAILED);
+	  return (1);
 	}
     }
   return (data_channel);

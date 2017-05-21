@@ -5,12 +5,12 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Thu May 18 14:37:14 2017 Baptiste Veyssiere
-** Last update Sun May 21 02:26:13 2017 Baptiste Veyssiere
+** Last update Sun May 21 17:58:19 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
 
-static char     *get_directory(char *command)
+static char	*get_directory(char *command)
 {
   int		i;
 
@@ -26,7 +26,7 @@ static char     *get_directory(char *command)
   return ("");
 }
 
-int     cwd(t_data *data)
+int	cwd(t_data *data)
 {
   char  *directory;
   char	str[100];
@@ -35,7 +35,7 @@ int     cwd(t_data *data)
   if (directory[0] && !realpath(directory, str))
     {
       if (ENOENT == errno)
-        return (reply(data->control_channel, "550 Failed to change directory.\r\n"));
+        return (reply(data->control_channel, CWD_FAIL));
       else
 	return (1);
     }
@@ -43,14 +43,14 @@ int     cwd(t_data *data)
       (!strncmp(str, data->path, strlen(data->path)) && chdir(directory) == -1))
     {
       if (!directory[0] || ENOENT == errno)
-        return (reply(data->control_channel, "550 Failed to change directory.\r\n"));
+        return (reply(data->control_channel, CWD_FAIL));
       else
         return (1);
     }
-  return (reply(data->control_channel, "250 Directory successfully changed.\r\n"));
+  return (reply(data->control_channel, CWD_SUCCESS));
 }
 
-int     cdup(t_data *data)
+int	cdup(t_data *data)
 {
   char	buffer[100];
 
@@ -59,14 +59,14 @@ int     cdup(t_data *data)
   if (strlen(buffer) > strlen(data->path) && chdir("..") == -1)
     {
       if (ENOENT == errno)
-        return (reply(data->control_channel, "550 Failed to change directory.\r\n"));
+        return (reply(data->control_channel, CWD_FAIL));
       else
         return (1);
     }
-  return (reply(data->control_channel, "250 Directory successfully changed.\r\n"));
+  return (reply(data->control_channel, CWD_SUCCESS));
 }
 
-int     pwd(t_data *data)
+int	pwd(t_data *data)
 {
   char  buffer[200];
   char  *current;

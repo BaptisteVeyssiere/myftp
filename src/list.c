@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Sun May 21 13:26:49 2017 Baptiste Veyssiere
-** Last update Sun May 21 14:35:16 2017 Baptiste Veyssiere
+** Last update Sun May 21 22:36:56 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -35,12 +35,19 @@ static int	send_list(int data_channel, t_data *data, char *command)
         return (1);
     }
   else
-    return (reply(data->control_channel, "226 Transfer done (but failed to open directory).\r\
-\n"));
+    return (reply(data->control_channel, TFR_FAIL));
   return (reply(data->control_channel, "226 Directory send OK.\r\n"));
 }
 
-int     list(t_data *data)
+static int	data_close(t_data *data, int ret)
+{
+  if (data->mode == 2)
+    close(data->data_channel);
+  data->mode = 0;
+  return (ret);
+}
+
+int	list(t_data *data)
 {
   int   data_channel;
   int   ret;
@@ -49,22 +56,13 @@ int     list(t_data *data)
   if (data->mode == 0)
     return (reply(data->control_channel, "425 Use PORT or PASV first.\r\n"));
   if ((data_channel = dtp_init(data)) == 1)
-    {
-      if (data->mode == 2)
-        close(data->data_channel);
-      data->mode = 0;
-      return (1);
-    }
-  if (!(ret = reply(data->control_channel, "150 Here comes the directory listing.\r\n")))
+    return (data_close(data, 0));
+  if (!(ret = reply(data->control_channel, PRELIST)))
     {
       if (!(command = get_full_path(data->command, data)))
-	{
-	  if (data->mode == 2)
-	    close(data->data_channel);
-	  data->mode = 0;
-	  return (1);
-	}
-      send_list(data_channel, data, command);
+	return (data_close(data, 1));
+      if (send_list(data_channel, data, command))
+	return (1);
       free(command);
     }
   if (close(data_channel) == -1 ||

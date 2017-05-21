@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 21:18:15 2017 Baptiste Veyssiere
-** Last update Sun May 21 01:26:42 2017 Baptiste Veyssiere
+** Last update Sun May 21 21:41:19 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -30,7 +30,7 @@ int			server_main(int fd)
   socklen_t		s_in_size;
 
   s_in_size = sizeof(s_in);
-  while (1)
+  while (!stop)
     {
       if ((control_channel =
 	   accept(fd, (struct sockaddr *)&s_in, &s_in_size)) == -1)

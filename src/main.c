@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Wed May 17 21:02:12 2017 Baptiste Veyssiere
-** Last update Sun May 21 11:47:42 2017 Baptiste Veyssiere
+** Last update Sun May 21 21:54:35 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -46,8 +46,7 @@ static int		init_server(int port)
       listen(fd, QUEUE_SIZE) == -1 ||
       server_main(fd) == 1)
     {
-      if (close(fd) == -1)
-	return (1);
+      close(fd);
       return (1);
     }
   if (close(fd) == -1)
@@ -73,11 +72,26 @@ static int	check_path(const char *path)
   return (0);
 }
 
+static int	signal_init()
+{
+  struct sigaction      act;
+
+  stop = 0;
+  if (!memset(&act, '\0', sizeof(act)))
+    return (1);
+  act.sa_handler = &sigint_handler;
+  if (sigaction(SIGINT, &act, NULL) == -1)
+    return (1);
+  return (0);
+}
+
 int	main(int argc, char **argv)
 {
   int	port;
   int	ret;
 
+  if (signal_init())
+    return (1);
   if (argc != 3)
     {
       write(1, USAGE, strlen(USAGE));

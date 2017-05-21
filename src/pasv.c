@@ -5,7 +5,7 @@
 ** Login   <veyssi_b@epitech.net>
 **
 ** Started on  Sat May 20 01:17:47 2017 Baptiste Veyssiere
-** Last update Sun May 21 15:21:37 2017 Baptiste Veyssiere
+** Last update Sun May 21 22:15:25 2017 Baptiste Veyssiere
 */
 
 #include "server.h"
@@ -33,6 +33,24 @@ static char	*to_string(int nbr)
   return (s);
 }
 
+static int	free_port(char *port1, char *port2, int ret)
+{
+  free(port1);
+  free(port2);
+  return (ret);
+}
+
+static void	fill_str(char *str, char *buf, char *port1, char *port2)
+{
+  strcat(str, "227 Entering Passive Mode (");
+  strcat(str, buf);
+  strcat(str, ",");
+  strcat(str, port1);
+  strcat(str, ",");
+  strcat(str, port2);
+  strcat(str, ").\r\n");
+}
+
 static int	passive_reply(char *ip, int port, t_data *data)
 {
   char  *port1;
@@ -42,20 +60,11 @@ static int	passive_reply(char *ip, int port, t_data *data)
   int   length;
   char	buf[16];
 
-  printf("%s:%d\n", ip, port);
-  if (!(port1 = to_string(port / 256)))
+  if (!(port1 = to_string(port / 256)) ||
+      !(port2 = to_string(port % 256)))
     return (1);
-  if (!(port2 = to_string(port % 256)))
-    {
-      free(port1);
-      return (1);
-    }
   if (!memset(buf, 0, 16))
-    {
-      free(port1);
-      free(port2);
-      return (1);
-    }
+    return (free_port(port1, port2, 1));
   strcat(buf, ip);
   i = -1;
   while (buf[++i])
@@ -63,44 +72,25 @@ static int	passive_reply(char *ip, int port, t_data *data)
       buf[i] = ',';
   length = strlen(buf) + strlen(port1) + strlen(port2) + 34;
   if (!(str = malloc(length)) || !memset(str, 0, length))
-    {
-      free(port1);
-      free(port2);
-      return (1);
-    }
-  strcat(str, "227 Entering Passive Mode (");
-  strcat(str, buf);
-  strcat(str, ",");
-  strcat(str, port1);
-  strcat(str, ",");
-  strcat(str, port2);
-  strcat(str, ").\r\n");
+    return (free_port(port1, port2, 1));
+  fill_str(str, buf, port1, port2);
   i = reply(data->control_channel, str);
   free(str);
-  free(port1);
-  free(port2);
-  return (i);
+  return (free_port(port1, port2, 0));
 }
 
 int	pasv(t_data *data)
 {
-  struct protoent	*pe;
+
   struct sockaddr_in	s_in;
   struct sockaddr_in	sin;
   int			fd;
   int			port;
   socklen_t		len;
 
-  if (data->mode == 2 && close(data->data_channel) == -1)
+
+  if (pasv_init(data, &fd, &s_in))
     return (1);
-  data->mode = 0;
-  data->data_channel = -1;
-  if (!(pe = getprotobyname("TCP")) ||
-      (fd = socket(AF_INET, SOCK_STREAM, pe->p_proto)) == -1)
-    return (1);
-  s_in.sin_family = AF_INET;
-  s_in.sin_port = htons(0);
-  s_in.sin_addr.s_addr = inet_addr(data->ip);
   len = sizeof(sin);
   if (bind(fd, (const struct sockaddr *)&s_in, sizeof(s_in)) == -1 ||
       getsockname(fd, (struct sockaddr *)&sin, &len) == -1 ||
@@ -108,8 +98,7 @@ int	pasv(t_data *data)
       listen(fd, QUEUE_SIZE) == -1 ||
       passive_reply(data->ip, port, data))
     {
-      if (close(fd) == -1)
-	return (1);
+      close(fd);
       return (1);
     }
   data->data_channel = fd;
