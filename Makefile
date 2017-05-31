@@ -11,7 +11,7 @@ NAME	= server
 
 RM	= rm -f
 
-CC	= gcc -g
+CC	= gcc
 
 MKDIR	= mkdir -p
 
